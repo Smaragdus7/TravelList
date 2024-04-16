@@ -8,11 +8,15 @@ export default function App() {
     setItems((items)=>[...items,item]);
   }
 
+  function handleDeleteItem(id){
+    setItems(items=>items.filter(item=> item.id !== id))
+  }
+
   return (
     <div className="app">
     <Logo/>
     <Form onAddItems={handleAddItems}/>
-    <PackingList items={items}/>
+    <PackingList items={items} onDeleteItem={handleDeleteItem}/>
     <Stats/>
     </div>
   );
@@ -28,6 +32,7 @@ function Form({onAddItems}){
   function handleChange(e){
     setDescription(e.target.value);
   }
+
   function handleSubmit(e){
     e.preventDefault();
     if(!description) return;//if there is no description do nothing
@@ -48,17 +53,17 @@ function Form({onAddItems}){
     <button>Add</button>
   </form>
 }
-function PackingList(items){
+function PackingList({items, onDeleteItem}){
   return <div className="list">
     <ul>
-      {items.map((item) => <Item item={item} key={item.id}/>)}
+      {items.map((item) => <Item item={item} onDeleteItem={onDeleteItem} key={item.id}/>)}
     </ul>
   </div>
 }
-function Item({item}){
+function Item({item, onDeleteItem}){
   return <li>
     <span style={item.packed ? {textDecoration: "line-through"} : {}}>{item.quantity} {item.description}</span>
-    <button>❌</button>
+    <button onClick={()=> onDeleteItem(item.id)}>❌</button>
     </li>
 }
 function Stats(){
